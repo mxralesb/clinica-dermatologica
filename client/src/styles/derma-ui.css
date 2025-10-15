@@ -1,0 +1,422 @@
+/* =========================================
+   Derma UI — Theme Global
+   ========================================= */
+
+/* Tokens */
+:root{
+  --bg: #0b0f14;
+  --bg-soft: #0e141a;
+  --card: #121a22;
+  --card-2: #16212b;
+  --text: #e9f1f7;
+  --title: #f4f8fb;
+  --muted: #8aa0b2;
+
+  --primary: #14b8a6;
+  --accent: #60a5fa;
+  --danger: #ef4444;
+
+  --ring: 0 0 0 3px rgba(20,184,166,.28);
+  --radius-xs: .55rem;
+  --radius: 1rem;
+  --radius-lg: 1.25rem;
+
+  --shadow-xs: 0 4px 14px rgba(0,0,0,.18);
+  --shadow-sm: 0 8px 24px rgba(0,0,0,.22);
+  --shadow: 0 18px 42px rgba(0,0,0,.28);
+
+  --container: 1120px;
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg: #f7fbff;
+    --bg-soft: #f2f7fb;
+    --card: #ffffff;
+    --card-2: #ffffff;
+    --text: #1d2530;
+    --title: #0b1320;
+    --muted: #5a6a78;
+
+    --shadow-xs: 0 6px 14px rgba(15,35,52,.08);
+    --shadow-sm: 0 10px 26px rgba(15,35,52,.10);
+    --shadow: 0 20px 52px rgba(15,35,52,.14);
+  }
+}
+
+/* Base */
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0;
+  color:var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
+  background:
+    radial-gradient(1200px 600px at 70% -10%, rgba(96,165,250,.08), transparent 55%),
+    radial-gradient(900px 500px at -10% 10%, rgba(20,184,166,.10), transparent 50%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+
+/* Shell */
+.dui-appbar{
+  position: sticky; top:0; z-index:50;
+  background:
+    radial-gradient(1000px 180px at 80% -40%, rgba(96,165,250,.16), transparent 60%),
+    radial-gradient(800px 160px at 10% -30%, rgba(20,184,166,.18), transparent 60%),
+    var(--bg-soft);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  backdrop-filter: saturate(1.05) blur(4px);
+}
+.dui-appbar__inner{ height:64px; display:flex; align-items:center; justify-content:space-between; gap:12px }
+.dui-appbar__title{ margin:0; font-size: clamp(1.05rem, 0.9rem + 1vw, 1.4rem); color:var(--title) }
+.dui-appbar__nav{ display:flex; align-items:center; gap:10px }
+.dui-navlink{
+  display:inline-flex; align-items:center; height:36px; padding:0 12px;
+  border-radius:999px; color:var(--muted); text-decoration:none; border:1px solid transparent;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.dui-navlink:hover{ color:var(--text); border-color:rgba(255,255,255,.12); background:rgba(255,255,255,.04) }
+.dui-navlink.-active{ color:#fff; border-color:rgba(20,184,166,.55); background:linear-gradient(135deg, var(--primary), var(--accent)) }
+.dui-main{ padding:14px 0 48px }
+
+/* Layout */
+.dui-container{ max-width:var(--container); margin:22px auto 80px; padding:0 16px }
+.dui-page{ display:grid; gap:14px }
+.dui-page__header{ display:flex; justify-content:space-between; align-items:end; gap:12px }
+.dui-title{ margin:0; font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); color:var(--title) }
+.dui-subtitle{ margin:0; color:var(--muted) }
+
+/* Card */
+.dui-card{
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(14px, 2.2vw, 20px);
+}
+
+/* Toolbar */
+.dui-toolbar{ display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center }
+.dui-toolbar .dui-actions{ display:flex; gap:8px; flex-wrap:wrap }
+
+/* Grid */
+.dui-grid{ --min:260px; display:grid; grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr)); gap:12px }
+.dui-grid.-cols-3{ grid-template-columns: repeat(3, 1fr) }
+@media (max-width:880px){ .dui-grid.-cols-3{ grid-template-columns: 1fr } }
+
+/* Inputs */
+.input{
+  width:100%; padding:11px 12px; border-radius: var(--radius-xs);
+  border:1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  color:var(--text);
+  transition: border-color .2s, box-shadow .2s, background .2s, transform .04s;
+}
+.input:hover{ border-color: rgba(96,165,250,.45) }
+.input:focus{ outline:none; border-color:var(--primary); box-shadow: var(--ring); background: linear-gradient(180deg, rgba(20,184,166,.08), rgba(255,255,255,.03)) }
+.input::placeholder{ color:var(--muted) }
+textarea.input{ resize:vertical; min-height:88px }
+
+/* Buttons */
+.btn{
+  --bd: rgba(255,255,255,.14);
+  --bg: rgba(255,255,255,.06);
+  color:var(--text);
+  padding:10px 16px; border-radius:.95rem;
+  border:1px solid var(--bd); background:var(--bg);
+  cursor:pointer; transition: transform .04s, box-shadow .2s, border-color .2s, background .2s;
+}
+.btn:hover{ box-shadow: var(--shadow-xs); border-color: rgba(96,165,250,.45) }
+.btn:active{ transform: translateY(1px) }
+.btn:focus-visible{ outline:none; box-shadow: var(--ring) }
+.btn.primary{ --bg: linear-gradient(135deg, var(--primary), var(--accent)); --bd: transparent; color:#fff; border:0 }
+.btn.ghost{ --bg: transparent; --bd: rgba(255,255,255,.18); color:var(--muted) }
+.btn.danger{ --bg: rgba(239,68,68,.16); --bd: rgba(239,68,68,.4); color:#fecaca }
+
+/* List items */
+.list{ list-style:none; margin:0; padding:0 }
+.list-item{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 16px; border:1px solid rgba(255,255,255,.06);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border-radius: var(--radius); box-shadow: var(--shadow-xs);
+}
+.list-item + .list-item{ margin-top:10px }
+.list-item:hover{ background: rgba(255,255,255,.04) }
+.list-item__meta{ flex:1; min-width:0 }
+.list-item__title{ margin:0; color:var(--title); font-weight:700; font-size:1.04rem }
+.list-item__sub{ margin:4px 0 0; color:var(--muted); font-size:.92rem }
+
+/* Links utilitarios */
+a.dui-link{ color:#9ecbff; text-decoration:none; border-bottom:1px dashed rgba(158,203,255,.45); padding-bottom:1px }
+a.dui-link:hover{ color:#cfe6ff; border-bottom-color:#cfe6ff }
+
+/* Utils */
+.muted{ color:var(--muted) }
+.space{ height:14px }
+.hr{ height:1px; background:rgba(255,255,255,.08); border:none; margin:12px 0 }
+
+/* Scrollbar */
+*::-webkit-scrollbar{ width:10px; height:10px }
+*::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgba(96,165,250,.35), rgba(20,184,166,.35));
+  border-radius:999px; border:2px solid transparent; background-clip:padding-box;
+}
+
+/* Print */
+@media print{
+  body{ background:#fff; color:#111 }
+  .dui-card{ box-shadow:none; border:1px solid #ddd }
+  .btn{ display:none !important }
+}
+
+
+/* === Compat: Derma Detail classes -> Theme === */
+.derma-container{ max-width:var(--container); margin:22px auto 80px; padding:0 16px }
+.derma-card{
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(14px, 2.2vw, 20px);
+  margin-top: 16px;
+}
+.derma-section-title{ margin:0 0 10px; font-size:1.1rem; color:var(--title) }
+.derma-section-subtitle{ margin:6px 0 8px; font-size:.95rem; color:var(--muted); font-weight:600 }
+.derma-label{ display:inline-block; color:var(--muted); font-size:.82rem; margin-bottom:6px }
+.derma-input{
+  width:100%; padding:11px 12px; border-radius: .55rem;
+  border:1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  color:var(--text); transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.derma-input:hover{ border-color: rgba(96,165,250,.45) }
+.derma-input:focus{ outline:none; border-color:var(--primary); box-shadow: 0 0 0 3px rgba(20,184,166,.28) }
+.derma-btn{
+  --bd: rgba(255,255,255,.14); --bg: rgba(255,255,255,.06);
+  color:var(--text); padding:10px 14px; border-radius:.95rem; border:1px solid var(--bd); background:var(--bg);
+  cursor:pointer; transition: transform .04s, box-shadow .2s, border-color .2s, background .2s;
+}
+.derma-btn:hover{ box-shadow: 0 4px 14px rgba(0,0,0,.18); border-color: rgba(96,165,250,.45) }
+.derma-btn:active{ transform: translateY(1px) }
+.derma-btn.primary{ background:linear-gradient(135deg,var(--primary),var(--accent)); border:0; color:#fff }
+.derma-btn.ghost{ background:transparent; border-color:rgba(255,255,255,.18); color:var(--muted) }
+.derma-grid{ display:grid; gap:12px }
+.derma-list{ list-style:none; margin:8px 0 0; padding:0 }
+.derma-list-item{ padding:8px 0; border-bottom:1px dashed rgba(255,255,255,.08) }
+.derma-list-item:last-child{ border-bottom:0 }
+.derma-chip{
+  display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:999px;
+  background: rgba(20,184,166,.15); color:#7de2d6; border:1px solid rgba(20,184,166,.35); font-size:.82rem;
+}
+
+
+/* ===== Tabs bonitos con indicador animado ===== */
+.dui-tabs{
+  position: relative;
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+}
+.dui-tab{
+  position: relative;
+  z-index: 1;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 600;
+  transition: color .2s ease;
+}
+.dui-tab:hover{ color: var(--text); }
+.dui-tab:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20,184,166,.28);
+}
+.dui-tab.-active{ color: #fff; }
+
+.dui-tabs__indicator{
+  position: absolute;
+  left: 0; bottom: 4px; height: 36px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 999px;
+  transition: transform .28s cubic-bezier(.2,.7,.2,1), width .28s cubic-bezier(.2,.7,.2,1);
+  box-shadow: 0 6px 16px rgba(20,184,166,.35);
+  z-index: 0;
+}
+@media (prefers-color-scheme: light){
+  .dui-tabs{ border-color: rgba(0,0,0,.06); }
+}
+
+/* ===== Modal (Derma) ===== */
+.dui-modal-backdrop{
+  position: fixed; inset: 0;
+  background: rgba(2,8,23,.55);
+  backdrop-filter: blur(4px) saturate(1.05);
+  display: grid; place-items: center;
+  z-index: 100;
+}
+.dui-modal{
+  width: min(560px, calc(100% - 32px));
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.dui-modal__header{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin-bottom: 6px;
+}
+.dui-modal__title{ margin:0; color:var(--title); font-size:1.1rem }
+.dui-modal__body{ color:var(--text); opacity:.95; margin:8px 0 16px }
+.dui-modal__footer{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap }
+
+/* helpers para errores de form */
+.input.-invalid{ border-color: rgba(239,68,68,.65) !important; box-shadow: 0 0 0 3px rgba(239,68,68,.25) }
+.form-hint{ font-size:.82rem; margin-top:4px; color:#fecaca }
+
+
+/* ===== Toasts (Derma) ===== */
+.dui-toasts{
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  gap: 8px;
+  z-index: 200;
+}
+.dui-toast{
+  min-width: 240px;
+  max-width: 360px;
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 0.9rem;
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  display: grid; gap: 6px;
+}
+.dui-toast__title{ margin:0; color: var(--title); font-size: .98rem; font-weight: 700 }
+.dui-toast__msg{ margin:0; color: var(--text); opacity:.92; font-size: .92rem }
+.dui-toast__row{ display:flex; justify-content: space-between; align-items:center; gap:8px }
+.dui-toast__close{ border:0; background:transparent; color:var(--muted); cursor:pointer }
+.dui-toast.--success{ border-color: rgba(34,197,94,.45) }
+.dui-toast.--info{ border-color: rgba(96,165,250,.45) }
+.dui-toast.--warning{ border-color: rgba(245,158,11,.45) }
+.dui-toast.--danger{ border-color: rgba(239,68,68,.45) }
+
+/* ===== Print rules para historial ===== */
+@media print{
+  /* Ocultar UI y secciones no requeridas */
+  .dui-appbar, .dui-tabs, .btn, .derma-chip, .dui-modal-backdrop { display: none !important; }
+  .dui-container { margin: 0; padding: 0; max-width: 100%; }
+  .dui-card { border: 0; box-shadow: none; padding: 0; }
+  body { background: #fff; color: #111; }
+
+  /* Historial: solo fecha, Recetado y Prescrito */
+  .derma-visit-dx,
+  .derma-visit-notes,
+  .derma-visit-reco { display: none !important; }
+
+  /* Opcional: compactar items */
+  .derma-timeline-card { border: 0; padding: 8px 0; background: transparent; }
+  .derma-list-item { border: 0; padding: 4px 0; }
+}
+
+
+/* ===== FAB ===== */
+.dui-fab{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 52px; height: 52px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--brand, #7c3aed);
+  color: white;
+  border: 0;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.dui-fab:hover{ filter: brightness(1.05) }
+
+/* ===== Drawer ===== */
+.dui-drawer__backdrop{
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: grid; justify-content: end; align-items: stretch;
+  z-index: 250;
+}
+.dui-drawer{
+  width: min(560px, 100%);
+  background: var(--card);
+  color: var(--text);
+  border-left: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow);
+  display: grid; grid-template-rows: auto auto auto 1fr auto;
+  gap: 10px; padding: 12px;
+}
+.dui-drawer__header{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px }
+.dui-drawer__title{ margin:0; color: var(--title) }
+.dui-drawer__sub{ margin:2px 0 0; color: var(--muted) }
+
+/* Aviso */
+.dui-banner{ padding:8px 10px; border-radius: .7rem; font-size:.92rem; }
+.dui-banner.-warning{ background: rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.4); color: #b45309 }
+
+/* Chips */
+.dui-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 }
+.chip{ border:1px solid rgba(255,255,255,.12); background: transparent; color: var(--text); padding:6px 10px; border-radius:.7rem; cursor:pointer }
+.chip:hover{ background: rgba(255,255,255,.06) }
+
+/* Switch */
+.dui-switch{ display:flex; align-items:center; gap:8px; }
+.dui-switch input{ width:18px; height:18px }
+
+/* Chat area */
+.dui-chat{
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: .9rem;
+  padding: 10px;
+  background: rgba(255,255,255,.03);
+  height: 48vh; overflow: auto;
+  scroll-behavior: smooth;
+}
+.dui-chat__empty{ display:grid; place-items:center; height:100% }
+.dui-chat__row{ display:flex; margin: 8px 0 }
+.dui-chat__row.-user{ justify-content: flex-end }
+.dui-chat__row.-bot{ justify-content: flex-start }
+.dui-chat__bubble{
+  max-width: 82%;
+  padding: 8px 10px;
+  border-radius: .9rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border:1px solid rgba(255,255,255,.09);
+}
+.dui-chat__row.-user .dui-chat__bubble{
+  background: rgba(124,58,237,.15);
+  border-color: rgba(124,58,237,.35);
+}
+.dui-chat__row.-bot .dui-chat__bubble{
+  background: rgba(255,255,255,.06);
+}
+.dotdotdot::after{ content: '…'; animation: dots 1.2s infinite steps(3, end) }
+@keyframes dots { 0%{content:''} 33%{content:'.'} 66%{content:'..'} 100%{content:'...'} }
+
+/* Composer */
+.dui-chat__composer{ display:grid; gap:8px; margin-top:8px }
+.dui-chat__actions{ display:flex; gap:8px; justify-content:flex-end; align-items:center }
+
+/* Drawer layout helpers */
+.dui-row.-between{ display:flex; justify-content:space-between; align-items:center }
+.dui-row.-wrap{ flex-wrap: wrap }

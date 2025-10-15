@@ -1,0 +1,71 @@
+{
+  "patients": [
+    {
+      "id": "OKQ2a8MmooI8TmX9vDXEr",
+      "name": "Mario Borrayo",
+      "dpi": "1234465786879",
+      "phone": "79864532",
+      "createdAt": "2025-09-19T01:48:40.959Z"
+    },
+    {
+      "id": "bm14EFfYcMGf9J3C_O52c",
+      "name": "Carlos Morales",
+      "dpi": "2348790876879",
+      "phone": "17841542",
+      "createdAt": "2025-09-19T01:51:16.356Z",
+      "updatedAt": "2025-09-19T01:52:59.558Z"
+    }
+  ],
+  "visits": [
+    {
+      "id": "dnMf5Joc64g4Xv9POm5j1",
+      "patientId": "bm14EFfYcMGf9J3C_O52c",
+      "reason": "Acne",
+      "diagnosis": "Acne",
+      "notes": "lesiones",
+      "createdAt": "2025-09-19T01:53:24.999Z"
+    },
+    {
+      "id": "qOQ2-va4JWUtcAQF-Au6B",
+      "patientId": "OKQ2a8MmooI8TmX9vDXEr",
+      "reason": "as1d4ad5a",
+      "diagnosis": "654sd2f4s65df4s2f412sdf4",
+      "notes": "sv1sdf4s2",
+      "createdAt": "2025-09-19T02:06:58.721Z"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "Ak2NAxx3u4itk29lBhorC",
+      "patientId": "bm14EFfYcMGf9J3C_O52c",
+      "items": [
+        {
+          "tipo": "medicamento",
+          "med": "Aspirina",
+          "dosis": "1 al dia",
+          "frecuencia": "media en la noche y media en la mañana"
+        },
+        {
+          "tipo": "medicamento",
+          "med": "adsda",
+          "dosis": "fsdfs",
+          "frecuencia": "vsdsf"
+        }
+      ],
+      "createdAt": "2025-09-19T01:54:24.163Z"
+    },
+    {
+      "id": "nDGo9GCHHpIgOmtiFdBvv",
+      "patientId": "OKQ2a8MmooI8TmX9vDXEr",
+      "items": [
+        {
+          "tipo": "medicamento",
+          "med": "dvsd",
+          "dosis": "qfewd",
+          "frecuencia": "sdvsweqe"
+        }
+      ],
+      "createdAt": "2025-09-19T02:07:08.946Z"
+    }
+  ]
+}
