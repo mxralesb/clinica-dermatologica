@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 4000
 await initDb()
 
 /* ---------------- CORS robusto (multi-origen) ----------------
-   Permite setear CLIENT_ORIGIN con varios orígenes separados por coma.
+   Usa la env CLIENT_ORIGIN con orígenes separados por coma.
    Ej:
    CLIENT_ORIGIN=http://localhost:5173,https://derma-web.onrender.com
 ---------------------------------------------------------------- */
@@ -24,15 +24,21 @@ function parseOrigins(envVal) {
 }
 
 const ALLOWED_ORIGINS = parseOrigins(process.env.CLIENT_ORIGIN)
+
+// Permite *.onrender.com y localhost:* por conveniencia de despliegue
+const RENDER_RX = /^https?:\/\/([a-z0-9-]+\.)*onrender\.com(:\d+)?$/i
+const LOCAL_RX  = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i
+
 const corsOptions = {
   origin(origin, cb) {
-    // Permite herramientas locales (curl, postman) sin origin
+    // Permite herramientas locales (curl, postman) sin Origin
     if (!origin) return cb(null, true)
-    // Permite orígenes configurados o *.onrender.com para flexibilidad
-    const ok =
-      ALLOWED_ORIGINS.includes(origin) ||
-      /https?:\/\/.*\.onrender\.com$/.test(origin)
-    cb(null, ok)
+
+    const inList = ALLOWED_ORIGINS.includes(origin)
+    const ok = inList || RENDER_RX.test(origin) || LOCAL_RX.test(origin)
+
+    if (ok) return cb(null, true)
+    return cb(new Error(`Not allowed by CORS: ${origin}`))
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -65,12 +71,17 @@ function slugifyName(name = '') {
       .replace(/(^\.)|(\.$)/g, '') || 'paciente'
   )
 }
+
 function genTempPassword() {
-  const s =
+  // 10 chars alfanuméricos
+  let s = (
     Math.random().toString(36).slice(2) +
     Math.random().toString(36).slice(2)
-  return s.replace(/[^a-z0-9]/gi, '').slice(8, 18) // 10 chars
+  ).replace(/[^a-z0-9]/gi, '')
+  if (s.length < 10) s = (s + 'abcdefghijklmnpqrstuvwxyz0123456789').slice(0, 10)
+  return s.slice(0, 10)
 }
+
 function ensureUniqueEmail(base) {
   let email = base
   let i = 1
@@ -95,7 +106,7 @@ app.post('/api/auth/login-derm', (req, res) => {
     role: u.role,
     email: u.email,
     name: u.name || 'Staff',
-    // en un futuro podrías emitir token JWT aquí
+    // futuro: emitir JWT aquí
   })
 })
 
@@ -118,8 +129,7 @@ app.post('/api/auth/login-patient', (req, res) => {
 })
 
 app.get('/api/auth/me', (_req, res) => {
-  // No usamos token en esta versión; devolvemos ok.
-  // Si luego agregas JWT, aquí validas y devuelves el usuario.
+  // Versión sin token (stub)
   res.json({ ok: true })
 })
 
@@ -158,9 +168,8 @@ app.post('/api/patients', async (req, res) => {
   // Crea usuario portal paciente
   const baseUser = slugifyName(patient.name)
   const domain = 'paciente.local' // cámbialo si tienes dominio real
-  const suggestedEmail = `${baseUser || 'paciente'}.${(patient.dpi || '')
-    .toString()
-    .slice(-4) || '0000'}@${domain}`
+  const suggestedEmail =
+    `${baseUser || 'paciente'}.${(patient.dpi || '').toString().slice(-4) || '0000'}@${domain}`
   const email = ensureUniqueEmail(suggestedEmail)
   const password = genTempPassword()
 
