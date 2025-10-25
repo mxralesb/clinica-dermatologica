@@ -1,9 +1,9 @@
 {
   "name": "derma-server",
-  "private": true,
+  "version": "0.1.0",
   "type": "module",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "node src/index.js",
     "start": "node src/index.js"
   },
   "dependencies": {
@@ -11,7 +11,6 @@
     "express": "^4.19.2",
     "lowdb": "^7.0.1",
     "morgan": "^1.10.0",
-    "nanoid": "^5.0.7",
-    "lowdb-node": "^7.0.1"
+    "nanoid": "^5.0.7"
   }
 }
