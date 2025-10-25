@@ -1,0 +1,80 @@
+/* ——— Paleta oscura minimal ——— */
+:root{
+  --hm-bg:#0b1526; --hm-panel:#0f1d33; --hm-input:#0c1a2d; --hm-border:#1f2b42;
+  --hm-text:#e6f0ff; --hm-sub:#a9b6d3; --hm-link:#7cc4ff;
+  --hm-accent:#2ec4c7; --hm-accent-700:#28aeb1;
+}
+
+/* Contenedor que “blinda” el login */
+.hm-form-only{
+  min-height:100dvh; display:grid; place-items:center; background:var(--hm-bg); color:var(--hm-text);
+  padding:16px;
+}
+
+/* Card */
+.hmfo-card{
+  width:min(480px, 92vw);
+  background:rgba(15,29,51,.72);
+  border:1px solid var(--hm-border);
+  border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,.35);
+  padding:28px 24px; backdrop-filter:blur(6px);
+}
+
+/* Marca */
+.hmfo-brand{ display:flex; justify-content:center; margin-bottom:8px; }
+
+/* Títulos */
+.hmfo-title{ text-align:center; margin:6px 0 6px; font-size:26px; font-weight:800; }
+.hmfo-cap{ text-align:center; margin:0 0 10px; color:var(--hm-sub) }
+
+/* Conmutador de rol */
+.hmfo-role{
+  display:flex; gap:8px; background:#0e1a2f; border:1px solid var(--hm-border);
+  padding:6px; border-radius:12px; width:max-content; margin:0 auto 12px;
+}
+.hmfo-role button{
+  background:transparent; color:#cfe0ff; font-weight:700;
+  border:none; padding:8px 14px; border-radius:10px; cursor:pointer;
+}
+.hmfo-role button.active{
+  background:#132342; color:#fff; box-shadow:inset 0 0 0 1px #2a3d63, 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* Formulario */
+.hmfo-form{ display:flex; flex-direction:column; gap:10px; }
+.hmfo-label{ font-size:14px; color:var(--hm-sub); }
+
+.hmfo-input{
+  display:block; width:100%;
+  background:var(--hm-input);
+  border:1px solid var(--hm-border); border-radius:10px;
+  padding:10px 12px; color:var(--hm-text); outline:none;
+}
+.hmfo-input::placeholder{ color:#8aa0c3; }
+.hmfo-input:focus{ border-color:#2a7bd3; box-shadow:0 0 0 3px rgba(42,123,211,.25); }
+
+.hmfo-row{ display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+.hmfo-check{ display:flex; align-items:center; gap:8px; color:var(--hm-sub); }
+.hmfo-link{ color:var(--hm-link); text-decoration:none; }
+.hmfo-link:hover{ text-decoration:underline; }
+
+.hmfo-alert{
+  background:#3b0d14; color:#ffb4bd; border:1px solid #5b1420;
+  padding:8px 10px; border-radius:10px; font-size:14px; margin-bottom:6px;
+}
+
+.hmfo-btn{
+  margin-top:4px; width:100%;
+  background:var(--hm-accent); border:none; color:#042024; font-weight:800;
+  padding:10px 14px; border-radius:10px; cursor:pointer;
+}
+.hmfo-btn:hover{ background:var(--hm-accent-700); }
+.hmfo-btn:disabled{ opacity:.65; cursor:default; }
+
+.hmfo-foot{ margin-top:10px; }
+.hmfo-note{ text-align:center; color:var(--hm-sub); font-size:13px; }
+.hmfo-copy{ text-align:center; color:var(--hm-sub); font-size:12px; opacity:.85; }
+
+/* —— Aislar de estilos globales (derma-ui.css) —— */
+.hm-form-only :where(.btn, .dui-btn, .input, .dui-input, .dui-link, .derma-input){ all: unset; }
+.hm-form-only :where(button){ display:inline-block; }
