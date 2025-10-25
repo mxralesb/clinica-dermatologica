@@ -15,7 +15,7 @@ app.use(cors({
   origin: CLIENT_ORIGIN,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false // si no usas cookies
+  credentials: false 
 }));
 
 app.use(express.json({ limit: '2mb' }))
