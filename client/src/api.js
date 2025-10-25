@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-const API_URL =
-  (import.meta.env && import.meta.env.VITE_API_URL) ||
-  'http://localhost:4000'; // fallback para cuando sí tengas server local
+// FORZAR Render (temporal)
+const API_URL = 'https://derma-api.onrender.com';
 
 export const api = axios.create({ baseURL: API_URL });
-
-// (Opcional) ver en consola a dónde está pegando:
 console.info('[API baseURL]', API_URL);
+
 
 // Si algún día agregas token:
 api.interceptors.request.use((cfg) => {
