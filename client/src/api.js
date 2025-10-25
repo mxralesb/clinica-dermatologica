@@ -1,7 +1,7 @@
 // client/src/api.js
 import axios from 'axios';
 
-// Toma primero VITE_API_BASE (prod), luego VITE_API_URL (legacy), o localhost en dev
+
 const API_BASE =
   import.meta.env?.VITE_API_BASE ||
   import.meta.env?.VITE_API_URL ||
@@ -9,9 +9,7 @@ const API_BASE =
 
 export const api = axios.create({ baseURL: API_BASE });
 
-// ----- Interceptor opcional: añade Authorization si guardas token en localStorage -----
-// No es requerido porque tu backend actual no valida tokens.
-// Se deja por compatibilidad, no afecta si 'hm_auth' no existe.
+
 api.interceptors.request.use((cfg) => {
   try {
     const raw = localStorage.getItem('hm_auth');
@@ -45,9 +43,7 @@ export function apiLogin(emailOrObj, password, type) {
     : loginDermReq(email, pass);
 }
 
-// NOTA: /api/auth/me no existe en tu server actual. Si lo implementas luego,
-// podrás exponer algo como:
-// export const meReq = () => api.get('/api/auth/me').then(r => r.data);
+
 
 /* ===================  PATIENTS  =================== */
 export const listPatients = (q = '') =>

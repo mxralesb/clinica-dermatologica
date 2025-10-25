@@ -1,32 +1,37 @@
+// server/src/db.js
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
+import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import fs from 'fs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Render te da un volumen en /data (lo creas más abajo)
-const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data')
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
+// Usa DATA_DIR si existe (Render: /data). Si no, carpeta local "data".
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data')
+fs.mkdirSync(DATA_DIR, { recursive: true })
 
-const file = path.join(dataDir, 'db.json')
+const file = path.join(DATA_DIR, 'db.json')
 
-// defaultData requerido por lowdb v7
+// lowdb v7 requiere defaultData
 const defaultData = { users: [], patients: [], visits: [], prescriptions: [] }
-export const db = new Low(new JSONFile(file), defaultData)
+export const db = new Low({ storage: new JSONFile(file), defaultData })
 
-export async function initDb(){
+export async function initDb() {
   await db.read()
-  if (!db.data) db.data = JSON.parse(JSON.stringify(defaultData))
-
-  // Seed si vacío
-  if (db.data.users.length === 0) {
+  // Seed demo si está vacío
+  if (!Array.isArray(db.data.users) || db.data.users.length === 0) {
     db.data.users.push(
       { id: 'u_derm1', role: 'DERM', name: 'Dra. Sofía López', email: 'sofia@histomed.gt', password: 'derm123' },
-      { id: 'u_pat1', role: 'PATIENT', name: 'Juan Pérez', email: 'juan@paciente.com', password: '123456', patientId: 'p101' }
+      { id: 'u_pat1', role: 'PATIENT', name: 'Juan Pérez', email: 'juan@paciente.com', password: '123456', patientId: 'p101' },
     )
-    db.data.patients.push({ id: 'p101', name:'Juan Pérez', dpi:'1234567890101', phone:'58701234', createdAt: new Date().toISOString() })
+    db.data.patients.push({
+      id: 'p101',
+      name:'Juan Pérez',
+      dpi:'1234567890101',
+      phone:'58701234',
+      createdAt: new Date().toISOString()
+    })
     await db.write()
   }
 }
