@@ -10,7 +10,14 @@ const PORT = process.env.PORT || 4000
 
 await initDb()
 
-app.use(cors())
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+app.use(cors({
+  origin: CLIENT_ORIGIN,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false // si no usas cookies
+}));
+
 app.use(express.json({ limit: '2mb' }))
 app.use(morgan('dev'))
 
