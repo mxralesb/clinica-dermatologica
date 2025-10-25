@@ -1,51 +1,61 @@
 // src/context/AuthContext.jsx
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { loginDermReq, loginPatientReq } from '../api'; // usa axios con VITE_API_URL
 
 const AuthCtx = createContext(null);
 
+const LS_KEY = 'hm_auth';
+
+function readStoredAuth() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // {id, role, email, name, patientId?}
-  const [ready, setReady] = useState(false);
+  const [user, setUser] = useState(() => readStoredAuth());
 
-  // re-hidrata sesión
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("hm.auth");
-      if (raw) setUser(JSON.parse(raw));
-    } catch {}
-    setReady(true);
-  }, []);
-
-  const persist = (u, remember) => {
-    setUser(u);
-    if (remember) localStorage.setItem("hm.auth", JSON.stringify(u));
-    else localStorage.removeItem("hm.auth");
-  };
+    // guarda sólo si hay usuario
+    if (user) {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(user)); } catch {}
+    } else {
+      try { localStorage.removeItem(LS_KEY); } catch {}
+    }
+  }, [user]);
 
   const loginDerm = async (email, password, remember = true) => {
-    const { data } = await axios.post("http://localhost:4000/api/auth/login-derm", { email, password });
-    persist(data, remember);
-    return data; // {role:'DERM', ...}
+    const u = await loginDermReq(email, password); // <— NO usa localhost
+    const payload = { ...u, role: 'DERM' };
+    setUser(payload);
+    if (remember) localStorage.setItem(LS_KEY, JSON.stringify(payload));
+    return payload;
   };
 
   const loginPatient = async (email, password, remember = true) => {
-    const { data } = await axios.post("http://localhost:4000/api/auth/login-patient", { email, password });
-    persist(data, remember);
-    return data; // {role:'PATIENT', patientId:...}
+    const u = await loginPatientReq(email, password); // <— NO usa localhost
+    const payload = { ...u, role: 'PATIENT' };
+    setUser(payload);
+    if (remember) localStorage.setItem(LS_KEY, JSON.stringify(payload));
+    return payload;
   };
 
-  const logout = async () => {
-    try { await axios.post("http://localhost:4000/api/auth/logout"); } catch {}
-    localStorage.removeItem("hm.auth");
+  const logout = () => {
     setUser(null);
+    try { localStorage.removeItem(LS_KEY); } catch {}
   };
 
-  return (
-    <AuthCtx.Provider value={{ user, ready, loginDerm, loginPatient, logout }}>
-      {children}
-    </AuthCtx.Provider>
-  );
+  const value = useMemo(() => ({
+    user,
+    role: user?.role || null,
+    isAuth: !!user,
+    loginDerm,
+    loginPatient,
+    logout,
+  }), [user]);
+
+  return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
 export const useAuth = () => useContext(AuthCtx);
