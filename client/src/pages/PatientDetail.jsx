@@ -11,10 +11,21 @@ import {
 } from '../api';
 import '../styles/derma-ui.css';
 import MedChat from '../components/MedChat.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function PatientDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const isPatient = user?.role === 'PATIENT';
+  const isDerm = user?.role === 'DERM';
+
+  // Si es paciente y trata de ver otro id, redirige al suyo
+  useEffect(() => {
+    if (isPatient && user?.patientId && id && id !== user.patientId) {
+      navigate(`/patient/${user.patientId}`, { replace: true });
+    }
+  }, [isPatient, user?.patientId, id, navigate]);
 
   // Estado principal
   const [patient, setPatient] = useState(null);
@@ -22,27 +33,32 @@ export default function PatientDetail() {
   const [rxs, setRxs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Edición paciente
+  // Edición paciente (solo staff)
   const [editing, setEditing] = useState(false);
   const [pform, setPform] = useState({ name: '', dpi: '', phone: '' });
   const firstFieldRef = useRef(null);
 
-  // Tabs
-  const [view, setView] = useState('visit'); // 'visit' | 'rx' | 'history'
+  // Tabs (paciente solo "history")
+  const [view, setView] = useState('history');
   const barRef = useRef(null);
   const tabRefs = useRef({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
-  const TABS = [
-    { id: 'visit', label: 'Nueva consulta' },
-    { id: 'rx', label: 'Nueva receta' },
-    { id: 'history', label: 'Historial' },
-  ];
 
-  // Nueva consulta
+  const TABS = useMemo(() => {
+    return isPatient
+      ? [{ id: 'history', label: 'Historial' }]
+      : [
+          { id: 'visit', label: 'Nueva consulta' },
+          { id: 'rx', label: 'Nueva receta' },
+          { id: 'history', label: 'Historial' },
+        ];
+  }, [isPatient]);
+
+  // Nueva consulta (solo staff)
   const [visit, setVisit] = useState({ date: '', reason: '', diagnosis: '', notes: '', recommendations: '' });
   const [savingVisit, setSavingVisit] = useState(false);
 
-  // Nueva receta
+  // Nueva receta (solo staff)
   const [rxVisitId, setRxVisitId] = useState('');
   const [item, setItem] = useState({ tipo: 'medicamento', med: '', dosis: '', frecuencia: '' });
   const [items, setItems] = useState([]);
@@ -158,7 +174,7 @@ export default function PatientDetail() {
     const elRect = el.getBoundingClientRect();
     setIndicator({ left: elRect.left - barRect.left, width: elRect.width });
   };
-  useLayoutEffect(updateIndicator, [view]);
+  useLayoutEffect(updateIndicator, [view, TABS]);
   useEffect(() => {
     const onResize = () => updateIndicator();
     window.addEventListener('resize', onResize);
@@ -249,12 +265,11 @@ export default function PatientDetail() {
   };
 
   const printHistory = () => {
-    // Cambia a "Historial", asegura render y manda imprimir (usa @media print)
     setView('history');
     setTimeout(() => window.print(), 0);
   };
 
-  // PDF individual por visita (Blob + fallback)
+  // PDF individual por visita
   const printSingleVisit = (v) => {
     const rxList = byVisit.get(v.id) || [];
     const meds = [];
@@ -271,6 +286,11 @@ export default function PatientDetail() {
     openPrintableHTML(html, `Visita_${(fecha || '').replace(/[^\w\-]+/g,'_')}.html`);
   };
 
+  // ---- logout header ----
+  const handleLogout = async () => {
+    try { await logout?.(); } finally { navigate('/login', { replace: true }); }
+  };
+
   // Renders de carga / error
   if (loading) return (
     <div className="dui-container dui-page">
@@ -285,7 +305,7 @@ export default function PatientDetail() {
 
   return (
     <div className="dui-container dui-page">
-      {/* Header Paciente */}
+      {/* Header Paciente + logout */}
       <section className="dui-card">
         <div className="derma-patient-header" style={{ display:'grid', gridTemplateColumns:'auto 1fr auto', gap:12, alignItems:'center' }}>
           <div className="derma-avatar lg" aria-hidden>{getInitials(patient.name)}</div>
@@ -317,19 +337,25 @@ export default function PatientDetail() {
             )}
           </div>
 
-          <div className="derma-ph-actions" style={{ display:'flex', gap:8 }}>
-            {!editing ? (
-              <>
-                <button className="btn" onClick={()=>{ setEditing(true); setTimeout(()=>firstFieldRef.current?.focus(),0); }}>Editar</button>
-                <Link className="btn ghost" to="/">← Volver</Link>
-                <button className="btn" onClick={printHistory}>Imprimir historial</button>
-              </>
+          <div className="derma-ph-actions" style={{ display:'flex', gap:8, alignItems:'center' }}>
+            {user?.email && <span className="derma-subtitle" title={user.email} style={{marginRight:6}}>{user.email}</span>}
+            {!isPatient ? (
+              !editing ? (
+                <>
+                  <button className="btn" onClick={()=>{ setEditing(true); setTimeout(()=>firstFieldRef.current?.focus(),0); }}>Editar</button>
+                  <Link className="btn ghost" to="/patients">← Volver</Link>
+                  <button className="btn" onClick={printHistory}>Imprimir historial</button>
+                </>
+              ) : (
+                <>
+                  <button className="btn primary" onClick={savePatient} disabled={!pf_valid}>Guardar</button>
+                  <button className="btn ghost" onClick={()=>{ setEditing(false); setPform({ name:patient.name||'', dpi:patient.dpi||'', phone:patient.phone||'' }); }}>Cancelar</button>
+                </>
+              )
             ) : (
-              <>
-                <button className="btn primary" onClick={savePatient} disabled={!pf_valid}>Guardar</button>
-                <button className="btn ghost" onClick={()=>{ setEditing(false); setPform({ name:patient.name||'', dpi:patient.dpi||'', phone:patient.phone||'' }); }}>Cancelar</button>
-              </>
+              <button className="btn" onClick={printHistory}>Imprimir historial</button>
             )}
+            <button className="btn ghost" onClick={handleLogout}>Cerrar sesión</button>
           </div>
         </div>
       </section>
@@ -363,8 +389,8 @@ export default function PatientDetail() {
         </div>
       </section>
 
-      {/* Panel: Nueva consulta */}
-      {view==='visit' && (
+      {/* Panel: Nueva consulta (solo staff) */}
+      {!isPatient && view==='visit' && (
         <section id="panel-visit" role="tabpanel" aria-labelledby="tab-visit" className="derma-card">
           <h2 className="derma-section-title">Nueva consulta</h2>
           <div className="derma-grid" style={{gridTemplateColumns:'1fr 1fr'}}>
@@ -393,8 +419,8 @@ export default function PatientDetail() {
         </section>
       )}
 
-      {/* Panel: Nueva receta */}
-      {view==='rx' && (
+      {/* Panel: Nueva receta (solo staff) */}
+      {!isPatient && view==='rx' && (
         <section id="panel-rx" role="tabpanel" aria-labelledby="tab-rx" className="derma-card">
           <h2 className="derma-section-title">Nueva indicación / receta</h2>
           <div className="derma-grid" style={{gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr'}}>
@@ -555,7 +581,7 @@ export default function PatientDetail() {
 
       {/* Acciones base */}
       <div style={{display:'flex', gap:8}}>
-        <Link className="btn ghost" to="..">← Volver a pacientes</Link>
+        {!isPatient && <Link className="btn ghost" to="/patients">← Volver a pacientes</Link>}
         <button className="btn" onClick={()=>navigate(0)}>Refrescar</button>
       </div>
 
@@ -638,14 +664,12 @@ function openPrintableHTML(html, filename = 'visita.html') {
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
-  // Intento 1: abrir nueva pestaña (la propia página ejecuta window.print())
   const w = window.open(url, '_blank');
   if (w && typeof w === 'object') {
     setTimeout(() => URL.revokeObjectURL(url), 60000);
     return;
   }
 
-  // Fallback: iframe oculto si bloquean popups
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.right = '-9999px';

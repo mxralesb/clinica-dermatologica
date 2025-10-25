@@ -14,6 +14,22 @@
       "email": "juan@paciente.com",
       "password": "123456",
       "patientId": "p101"
+    },
+    {
+      "id": "fd_sMv-1ttbNIwF2WiCXK",
+      "role": "PATIENT",
+      "email": "jim.enamorao.6641@paciente.local",
+      "password": "2yx9ud7ab7",
+      "patientId": "YzLhTBGEk5h2cEQHEx7v8",
+      "createdAt": "2025-10-25T03:24:38.843Z"
+    },
+    {
+      "id": "d5DSqczce76I6kOxjGjUN",
+      "role": "PATIENT",
+      "email": "jimbo.6483@paciente.local",
+      "password": "s7tkzkrhgg",
+      "patientId": "W1W0bJhxT-RFxCyjcvgAj",
+      "createdAt": "2025-10-25T03:37:53.166Z"
     }
   ],
   "patients": [
@@ -23,8 +39,77 @@
       "dpi": "1234567890101",
       "phone": "58701234",
       "createdAt": "2025-10-24T03:19:21.037Z"
+    },
+    {
+      "id": "Ize-aVTzV3d78szjUAhrJ",
+      "name": "Mario Borrayo",
+      "dpi": "4586854853164",
+      "phone": "15164634",
+      "createdAt": "2025-10-25T03:11:13.154Z"
+    },
+    {
+      "id": "YzLhTBGEk5h2cEQHEx7v8",
+      "name": "Jim enamorao",
+      "dpi": "4851648136641",
+      "phone": "13546346",
+      "createdAt": "2025-10-25T03:24:38.834Z"
+    },
+    {
+      "id": "W1W0bJhxT-RFxCyjcvgAj",
+      "name": "Jimbo",
+      "dpi": "5416487616483",
+      "phone": "41544154",
+      "createdAt": "2025-10-25T03:37:53.166Z"
     }
   ],
-  "visits": [],
-  "prescriptions": []
+  "visits": [
+    {
+      "id": "zNeGGdMpx1ckEVnGDSdzf",
+      "patientId": "p101",
+      "reason": "Acne",
+      "diagnosis": "Acne",
+      "notes": "evoluciona rapido",
+      "recommendations": "lavarse la cara",
+      "createdAt": "2025-10-25T03:10:27.705Z"
+    },
+    {
+      "id": "EfwTYEOTNiu_N_nqI7amq",
+      "patientId": "p101",
+      "reason": "FCDESecSe",
+      "diagnosis": "VEAVSVES",
+      "notes": "WEVSDEVSEVAW",
+      "recommendations": "EVSEVSVSV",
+      "createdAt": "2025-10-25T03:26:08.994Z"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "YWTQcfsyaSQCU5J4Rx2oZ",
+      "patientId": "p101",
+      "visitId": "zNeGGdMpx1ckEVnGDSdzf",
+      "items": [
+        {
+          "tipo": "medicamento",
+          "med": "fef",
+          "dosis": "wdcase",
+          "frecuencia": "1111111"
+        }
+      ],
+      "createdAt": "2025-10-25T03:10:43.118Z"
+    },
+    {
+      "id": "Kv9nsjQeYHVj_x7SJWyOD",
+      "patientId": "p101",
+      "visitId": "EfwTYEOTNiu_N_nqI7amq",
+      "items": [
+        {
+          "tipo": "indicacion",
+          "med": "VEVEW",
+          "dosis": "VSWEVAWEV",
+          "frecuencia": "DEVSWVE"
+        }
+      ],
+      "createdAt": "2025-10-25T03:26:19.798Z"
+    }
+  ]
 }

@@ -1,49 +1,51 @@
-// ==============================
-// client/src/context/AuthContext.jsx
-// ==============================
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { loginDermReq, loginPatientReq, meReq } from '../api'
+// src/context/AuthContext.jsx
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
-const AuthContext = createContext(null)
-export const useAuth = () => useContext(AuthContext)
+const AuthCtx = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null); // {id, role, email, name, patientId?}
+  const [ready, setReady] = useState(false);
 
+  // re-hidrata sesión
   useEffect(() => {
-    const raw = localStorage.getItem('hm_auth')
-    if (!raw) { setLoading(false); return }
     try {
-      const { token: t } = JSON.parse(raw)
-      if (!t) { setLoading(false); return }
-      setToken(t)
-      meReq(t)
-        .then(setUser)
-        .catch(() => { localStorage.removeItem('hm_auth'); setUser(null); setToken(null) })
-        .finally(() => setLoading(false))
-    } catch { setLoading(false) }
-  }, [])
+      const raw = localStorage.getItem("hm.auth");
+      if (raw) setUser(JSON.parse(raw));
+    } catch {}
+    setReady(true);
+  }, []);
+
+  const persist = (u, remember) => {
+    setUser(u);
+    if (remember) localStorage.setItem("hm.auth", JSON.stringify(u));
+    else localStorage.removeItem("hm.auth");
+  };
 
   const loginDerm = async (email, password, remember = true) => {
-    const { token: t, user: u } = await loginDermReq(email, password)
-    setToken(t); setUser(u)
-    if (remember) localStorage.setItem('hm_auth', JSON.stringify({ token: t }))
-    return u
-  }
+    const { data } = await axios.post("http://localhost:4000/api/auth/login-derm", { email, password });
+    persist(data, remember);
+    return data; // {role:'DERM', ...}
+  };
 
   const loginPatient = async (email, password, remember = true) => {
-    const { token: t, user: u } = await loginPatientReq(email, password)
-    setToken(t); setUser(u)
-    if (remember) localStorage.setItem('hm_auth', JSON.stringify({ token: t }))
-    return u
-  }
+    const { data } = await axios.post("http://localhost:4000/api/auth/login-patient", { email, password });
+    persist(data, remember);
+    return data; // {role:'PATIENT', patientId:...}
+  };
 
-  const logout = () => { setUser(null); setToken(null); localStorage.removeItem('hm_auth') }
+  const logout = async () => {
+    try { await axios.post("http://localhost:4000/api/auth/logout"); } catch {}
+    localStorage.removeItem("hm.auth");
+    setUser(null);
+  };
 
-  const value = useMemo(() => ({ user, token, loading, loginDerm, loginPatient, logout }), [user, token, loading])
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthCtx.Provider value={{ user, ready, loginDerm, loginPatient, logout }}>
+      {children}
+    </AuthCtx.Provider>
+  );
 }
 
-
+export const useAuth = () => useContext(AuthCtx);

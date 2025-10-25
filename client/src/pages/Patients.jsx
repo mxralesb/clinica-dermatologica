@@ -1,9 +1,12 @@
+// File: src/pages/Patients.jsx
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { listPatients, createPatient, deletePatient } from '../api';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Patients() {
   const navigate = useNavigate();
+  const { logout } = useAuth?.() || {};
 
   const [q, setQ] = useState('');
   const [list, setList] = useState([]);
@@ -18,7 +21,7 @@ export default function Patients() {
 
   // modal: guardado
   const [saveModalOpen, setSaveModalOpen] = useState(false);
-  const [created, setCreated] = useState(null); // {id, name}
+  const [created, setCreated] = useState(null); // {id, name, login:{email,password}}
 
   // modales de borrado
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -60,13 +63,18 @@ export default function Patients() {
     setForm({ name:'', dpi:'', phone:'' });
     await load();
 
+    // res trae: { id, name, ..., login:{email,password} }
     let newId = res?.id;
     if (!newId) {
       const found = (Array.isArray(list) ? list : []).find(p => String(p.dpi) === payload.dpi);
       newId = found?.id || null;
     }
 
-    setCreated({ id: newId, name: payload.name });
+    setCreated({
+      id: newId,
+      name: payload.name,
+      login: res?.login || null,
+    });
     setSaveModalOpen(true);
     setView('list');
   };
@@ -113,10 +121,56 @@ export default function Patients() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  // imprimir credenciales
+  const printCreds = () => {
+    if (!created?.login) return;
+    const { email, password } = created.login;
+    const html = `<!doctype html>
+<html><head><meta charset="utf-8"/>
+<title>Credenciales Portal Paciente</title>
+<style>
+  body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin:24px; color:#111; }
+  .card{ border:1px solid #ddd; border-radius:10px; padding:16px 18px; max-width:420px; }
+  h1{ font-size:18px; margin:0 0 8px; }
+  .muted{ color:#555; margin:4px 0 12px; }
+  .row{ margin:6px 0; }
+  code{ font-weight:700; }
+  .warn{ margin-top:10px; font-size:13px; color:#333; }
+  @media print{ @page { margin: 12mm } }
+</style></head>
+<body>
+  <div class="card">
+    <h1>Acceso al Portal del Paciente</h1>
+    <div class="muted">${created?.name ? created.name : 'Paciente'}</div>
+    <div class="row">URL: <code>http://localhost:5173/login/patient</code></div>
+    <div class="row">Usuario: <code>${email}</code></div>
+    <div class="row">Contraseña temporal: <code>${password}</code></div>
+    <p class="warn">Recomendación: cambiar la contraseña en el primer ingreso.</p>
+  </div>
+  <script>window.onload = () => setTimeout(()=>window.print(), 50)</script>
+</body></html>`;
+    const blob = new Blob([html], { type:'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    if (!w) {
+      // fallback iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.position='fixed'; iframe.style.right='-9999px'; iframe.style.bottom='-9999px';
+      document.body.appendChild(iframe); iframe.src = url;
+      iframe.onload = () => { iframe.contentWindow?.print(); setTimeout(()=>{ URL.revokeObjectURL(url); iframe.remove(); }, 2000); }
+    } else {
+      setTimeout(()=>URL.revokeObjectURL(url), 60000);
+    }
+  };
+
   return (
     <div className="dui-container dui-page">
-      <header className="dui-page__header">
+      <header className="dui-page__header" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h2 className="dui-title">Gestión de Pacientes</h2>
+        {/* botón cerrar sesión (staff) */}
+        <button className="btn ghost" onClick={async()=>{ try{ await logout?.() } finally{ navigate('/login/derm', { replace:true }) } }}>
+          Cerrar sesión
+        </button>
       </header>
 
       {/* Tabs */}
@@ -259,7 +313,7 @@ export default function Patients() {
         </section>
       )}
 
-      {/* Modal: paciente guardado */}
+      {/* Modal: paciente guardado — muestra e imprime credenciales */}
       {saveModalOpen && (
         <div className="dui-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-save-title">
           <div className="dui-modal">
@@ -273,6 +327,15 @@ export default function Patients() {
               ) : (
                 <p>El paciente se guardó correctamente.</p>
               )}
+
+              {created?.login && (
+                <div className="dui-card" style={{marginTop:10}}>
+                  <p style={{margin:'6px 0 8px'}}><b>Credenciales del portal del paciente</b></p>
+                  <p style={{margin:'4px 0'}}>Usuario: <code>{created.login.email}</code></p>
+                  <p style={{margin:'4px 0'}}>Contraseña temporal: <code>{created.login.password}</code></p>
+                  <p className="derma-subtitle" style={{marginTop:6}}>Imprime o comparte al paciente. Se recomienda cambiarla en el primer acceso.</p>
+                </div>
+              )}
             </div>
             <div className="dui-modal__footer">
               {created?.id ? (
@@ -283,6 +346,9 @@ export default function Patients() {
                   Ver paciente
                 </button>
               ) : null}
+              {created?.login && (
+                <button className="btn" onClick={printCreds}>Imprimir credenciales</button>
+              )}
               <button
                 className="btn primary"
                 onClick={() => { setSaveModalOpen(false); setView('add'); }}
