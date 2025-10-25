@@ -1,41 +1,39 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, NavLink, Outlet } from 'react-router-dom';
-
-import Patients from './pages/Patients.jsx';
-import PatientDetail from './pages/PatientDetail.jsx';
-
-import './styles/derma-ui.css';   // <- Asegúrate de que este path exista
-
-function Layout() {
-  return (
-    <div>
-      <header className="dui-appbar">
-        <div className="dui-appbar__inner dui-container">
-          <h1 className="dui-appbar__title">Dermatología MVP</h1>
-          <nav className="dui-appbar__nav">
-            <NavLink to="/" end className={({isActive}) => `dui-navlink ${isActive ? '-active':''}`}>
-              Pacientes
-            </NavLink>
-          </nav>
-        </div>
-      </header>
-      <main className="dui-main">
-        <Outlet />
-      </main>
-    </div>
-  );
-}
-
-const router = createBrowserRouter([
-  { path: '/', element: <Layout />, children: [
-    { index: true, element: <Patients /> },
-    { path: 'patient/:id', element: <PatientDetail /> },
-  ]},
-]);
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import Login from './pages/Login.jsx'           
+import LoginDerm from './pages/LoginDerm.jsx'
+import LoginPatient from './pages/LoginPatient.jsx'
+import Patients from './pages/Patients.jsx'
+import PatientDetail from './pages/PatientDetail.jsx'
+import './styles/derma-ui.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Login unificado con switch Staff/Paciente */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Logins existentes: se mantienen */}
+          <Route path="/login/derm" element={<LoginDerm />} />
+          <Route path="/login/patient" element={<LoginPatient />} />
+
+          {/* Rutas protegidas */}
+          <Route element={<ProtectedRoute roles={['DERM']} />}>
+            <Route path="/patients" element={<Patients />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={['DERM', 'PATIENT']} />}>
+            <Route path="/patient/:id" element={<PatientDetail />} />
+          </Route>
+
+          {/* fallback al login unificado */}
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </React.StrictMode>
-);
+)

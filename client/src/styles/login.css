@@ -1,0 +1,129 @@
+/* === Paleta y base oscura === */
+:root {
+  --hm-bg: #0b1526;
+  --hm-panel: #0f1d33;
+  --hm-input: #0c1a2d;
+  --hm-border: #1f2b42;
+  --hm-text: #e6f0ff;
+  --hm-sub: #a9b6d3;
+  --hm-link: #7cc4ff;
+  --hm-accent: #2ec4c7; /* color del botón */
+  --hm-accent-700: #28aeb1;
+}
+.hm-login {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr min(520px, 92vw);
+  background: var(--hm-bg);
+  color: var(--hm-text);
+}
+@media (max-width: 960px) {
+  .hm-login { grid-template-columns: 1fr; }
+  .hm-login__aside { display: none; }
+}
+
+/* Lateral con “ilustración” */
+.hm-login__aside {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(800px 480px at -10% -10%, rgba(44,172,199,.25), transparent 60%),
+    radial-gradient(900px 600px at 110% 110%, rgba(124,196,255,.18), transparent 60%),
+    #0b1526;
+}
+.hm-stetho {
+  position:absolute; inset:0;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width=\"800\" height=\"800\" viewBox=\"0 0 200 200\" opacity=\"0.08\"><path d=\"M70 30 v50 a20 20 0 0 0 40 0 v-8\" fill=\"none\" stroke=\"%23E6F0FF\" stroke-width=\"4\" stroke-linecap=\"round\"/><circle cx=\"130\" cy=\"72\" r=\"10\" fill=\"none\" stroke=\"%23E6F0FF\" stroke-width=\"4\"/></svg>') center left / 480px no-repeat;
+}
+
+/* Panel central */
+.hm-login__panel {
+  display:grid; place-items:center;
+  padding: 32px 20px;
+}
+.hm-login__card {
+  width: 100%;
+  background: rgba(15,29,51,.72);
+  border: 1px solid var(--hm-border);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35);
+  padding: 28px 24px;
+  backdrop-filter: blur(6px);
+}
+.hm-login__brand { display:flex; justify-content:center; margin-bottom: 10px; }
+
+.hm-login__title {
+  text-align:center;
+  margin: 4px 0 14px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.hm-form { display:flex; flex-direction:column; gap:10px; }
+.hm-label { font-size: 14px; color: var(--hm-sub); }
+.hm-input {
+  background: var(--hm-input);
+  border: 1px solid var(--hm-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--hm-text);
+  outline: none;
+}
+.hm-input::placeholder { color: #8aa0c3; }
+.hm-input:focus { border-color: #2a7bd3; box-shadow: 0 0 0 3px rgba(42,123,211,.25); }
+
+.hm-form__row {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top: 2px;
+}
+.hm-check { display:flex; align-items:center; gap:8px; color: var(--hm-sub); }
+.hm-link { color: var(--hm-link); text-decoration: none; }
+.hm-link:hover { text-decoration: underline; }
+
+.hm-alert {
+  background:#3b0d14; color:#ffb4bd;
+  border:1px solid #5b1420;
+  padding:8px 10px; border-radius:10px; font-size:14px;
+}
+
+.hm-btn {
+  margin-top: 4px;
+  width: 100%;
+  background: var(--hm-accent);
+  border: none;
+  color: #042024;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.hm-btn:hover { background: var(--hm-accent-700); }
+.hm-btn:disabled { opacity: .65; cursor: default; }
+
+.hm-note {
+  text-align:center; color: var(--hm-sub);
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+.hm-copy {
+  text-align:center; color: var(--hm-sub);
+  margin: 2px 0 0;
+  font-size: 12px;
+  opacity: .85;
+}
+
+
+/* Switch Staff / Paciente */
+.hm-role {
+  display:flex; gap:8px; background:#0e1a2f; border:1px solid var(--hm-border);
+  padding:6px; border-radius:12px; width:max-content; margin: 0 auto 12px;
+}
+.hm-role__btn{
+  background:transparent; color:#cfe0ff; font-weight:600;
+  border:none; padding:8px 14px; border-radius:10px; cursor:pointer;
+}
+.hm-role__btn.-active{
+  background:#132342; color:#fff; box-shadow: inset 0 0 0 1px #2a3d63, 0 2px 8px rgba(0,0,0,.25);
+}
+.hm-role__btn:focus{ outline:2px solid #2a7bd3; outline-offset:2px; border-radius:12px; }

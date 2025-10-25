@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "u_derm1",
+      "role": "DERM",
+      "name": "Dra. Sofía López",
+      "email": "sofia@histomed.gt",
+      "password": "derm123"
+    },
+    {
+      "id": "u_pat1",
+      "role": "PATIENT",
+      "name": "Juan Pérez",
+      "email": "juan@paciente.com",
+      "password": "123456",
+      "patientId": "p101"
+    }
+  ],
+  "patients": [
+    {
+      "id": "p101",
+      "name": "Juan Pérez",
+      "dpi": "1234567890101",
+      "phone": "58701234",
+      "createdAt": "2025-10-24T03:19:21.037Z"
+    }
+  ],
+  "visits": [],
+  "prescriptions": []
+}
