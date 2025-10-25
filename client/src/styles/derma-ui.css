@@ -435,7 +435,7 @@ a.dui-link:hover{ color:#cfe6ff; border-bottom-color:#cfe6ff }
 .auth-hero{
   position:relative; overflow:hidden; background: radial-gradient(1200px 600px at -10% -10%, #3aa0ff33, transparent),
                                    radial-gradient(900px 600px at 110% 110%, #22d3ee33, transparent),
-                                   linear-gradient(160deg, #0b1526 0%, #0f1d39 100%);
+                                   linear-gradient(160deg, #0b1526 0%, #0c1a35 100%);
   display:flex; align-items:center; justify-content:center;
   padding:48px;
 }
@@ -487,7 +487,6 @@ a.dui-link:hover{ color:#cfe6ff; border-bottom-color:#cfe6ff }
 
 .auth-switch{ margin-top:10px; }
 
-/* Pequeñas mejoras a inputs/btns ya existentes */
 .input.auth-input{
   border-radius:10px;
 }

@@ -10,11 +10,6 @@ const PORT = process.env.PORT || 4000
 
 await initDb()
 
-/* ---------------- CORS robusto (multi-origen) ----------------
-   Usa la env CLIENT_ORIGIN con orígenes separados por coma.
-   Ej:
-   CLIENT_ORIGIN=http://localhost:5173,https://derma-web.onrender.com
----------------------------------------------------------------- */
 function parseOrigins(envVal) {
   if (!envVal) return ['http://localhost:5173']
   return String(envVal)
@@ -25,13 +20,12 @@ function parseOrigins(envVal) {
 
 const ALLOWED_ORIGINS = parseOrigins(process.env.CLIENT_ORIGIN)
 
-// Permite *.onrender.com y localhost:* por conveniencia de despliegue
 const RENDER_RX = /^https?:\/\/([a-z0-9-]+\.)*onrender\.com(:\d+)?$/i
 const LOCAL_RX  = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i
 
 const corsOptions = {
   origin(origin, cb) {
-    // Permite herramientas locales (curl, postman) sin Origin
+  
     if (!origin) return cb(null, true)
 
     const inList = ALLOWED_ORIGINS.includes(origin)
@@ -49,7 +43,7 @@ app.use(cors(corsOptions))
 // Preflight global
 app.options('*', cors(corsOptions))
 
-// En Render detrás de proxy
+
 app.set('trust proxy', 1)
 
 app.use(express.json({ limit: '2mb' }))
@@ -73,7 +67,7 @@ function slugifyName(name = '') {
 }
 
 function genTempPassword() {
-  // 10 chars alfanuméricos
+
   let s = (
     Math.random().toString(36).slice(2) +
     Math.random().toString(36).slice(2)
@@ -106,7 +100,7 @@ app.post('/api/auth/login-derm', (req, res) => {
     role: u.role,
     email: u.email,
     name: u.name || 'Staff',
-    // futuro: emitir JWT aquí
+   
   })
 })
 
@@ -129,7 +123,7 @@ app.post('/api/auth/login-patient', (req, res) => {
 })
 
 app.get('/api/auth/me', (_req, res) => {
-  // Versión sin token (stub)
+ 
   res.json({ ok: true })
 })
 
@@ -167,7 +161,7 @@ app.post('/api/patients', async (req, res) => {
 
   // Crea usuario portal paciente
   const baseUser = slugifyName(patient.name)
-  const domain = 'paciente.local' // cámbialo si tienes dominio real
+  const domain = 'paciente'
   const suggestedEmail =
     `${baseUser || 'paciente'}.${(patient.dpi || '').toString().slice(-4) || '0000'}@${domain}`
   const email = ensureUniqueEmail(suggestedEmail)
@@ -177,7 +171,7 @@ app.post('/api/patients', async (req, res) => {
     id: nanoid(),
     role: 'PATIENT',
     email,
-    password, // plano en dev; en prod usar hash
+    password, 
     patientId: patient.id,
     createdAt: new Date().toISOString(),
   }

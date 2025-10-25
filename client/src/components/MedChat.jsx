@@ -55,7 +55,7 @@ export default function MedChat({ patient, visits }) {
     if (latest) {
       const meds = [];
       const indic = [];
-      (latest.items || latest.rxItems || []).forEach(() => {}); // por si tu backend ya agregara items a la visita (si no, ignorar)
+      (latest.items || latest.rxItems || []).forEach(() => {}); 
     }
     return lines.join('\n');
   }, [patient, visits]);
@@ -109,7 +109,7 @@ export default function MedChat({ patient, visits }) {
     if (!last) return;
     try {
       await navigator.clipboard.writeText(last.content);
-      // opcional: podrías emitir un toast global si ya tienes
+   
     } catch {}
   };
 
@@ -199,7 +199,7 @@ export default function MedChat({ patient, visits }) {
   );
 }
 
-/* utils locales (duplicadas mínimas para no depender del resto) */
+
 function formatDate(iso){ try{ const d=new Date(iso); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'}) }catch{ return iso } }
 function maskDPI(dpi){ if(!dpi) return '—'; const s=String(dpi).replace(/\D/g,''); if(s.length!==13) return s; return s.slice(0,4)+' •••• •'+s.slice(9) }
 function formatPhone(phone){ if(!phone) return '—'; const s=String(phone).replace(/\D/g,''); if(s.length===11 && s.startsWith('502')) return '+502 '+s.slice(3,7)+'-'+s.slice(7); if(s.length===8) return s.slice(0,4)+'-'+s.slice(4); return phone }

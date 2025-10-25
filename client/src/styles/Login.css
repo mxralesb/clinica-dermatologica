@@ -5,7 +5,6 @@
   --hm-accent:#2ec4c7; --hm-accent-700:#28aeb1;
 }
 
-/* Contenedor que “blinda” el login */
 .hm-form-only{
   min-height:100dvh; display:grid; place-items:center; background:var(--hm-bg); color:var(--hm-text);
   padding:16px;
@@ -75,6 +74,5 @@
 .hmfo-note{ text-align:center; color:var(--hm-sub); font-size:13px; }
 .hmfo-copy{ text-align:center; color:var(--hm-sub); font-size:12px; opacity:.85; }
 
-/* —— Aislar de estilos globales (derma-ui.css) —— */
 .hm-form-only :where(.btn, .dui-btn, .input, .dui-input, .dui-link, .derma-input){ all: unset; }
 .hm-form-only :where(button){ display:inline-block; }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import AuthLogo from "../components/AuthLogo"; // opcional si lo tienes
+import AuthLogo from "../components/AuthLogo"; 
 import "../styles/derma-ui.css";
 import "../styles/Login.css";
 

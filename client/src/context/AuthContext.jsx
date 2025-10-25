@@ -1,7 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { loginDermReq, loginPatientReq } from '../api'; // usa axios con VITE_API_URL
-
+import { loginDermReq, loginPatientReq } from '../api'; 
 const AuthCtx = createContext(null);
 
 const LS_KEY = 'hm_auth';
@@ -17,7 +16,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => readStoredAuth());
 
   useEffect(() => {
-    // guarda sólo si hay usuario
+    
     if (user) {
       try { localStorage.setItem(LS_KEY, JSON.stringify(user)); } catch {}
     } else {
@@ -26,7 +25,7 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   const loginDerm = async (email, password, remember = true) => {
-    const u = await loginDermReq(email, password); // <— NO usa localhost
+    const u = await loginDermReq(email, password); 
     const payload = { ...u, role: 'DERM' };
     setUser(payload);
     if (remember) localStorage.setItem(LS_KEY, JSON.stringify(payload));
@@ -34,7 +33,7 @@ export function AuthProvider({ children }) {
   };
 
   const loginPatient = async (email, password, remember = true) => {
-    const u = await loginPatientReq(email, password); // <— NO usa localhost
+    const u = await loginPatientReq(email, password); 
     const payload = { ...u, role: 'PATIENT' };
     setUser(payload);
     if (remember) localStorage.setItem(LS_KEY, JSON.stringify(payload));

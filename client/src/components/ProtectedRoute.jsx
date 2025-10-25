@@ -16,7 +16,7 @@ export default function ProtectedRoute({ roles = [], children }) {
     // Redirige según su rol
     if (role === 'PATIENT') {
       // si es paciente, lo mandamos a su propio historial
-      // si tienes guardado el patientId en user, úsalo:
+ 
       const pid = user?.patientId || '';
       return <Navigate to={pid ? `/patient/${pid}` : '/login/patient'} replace />;
     }
@@ -24,8 +24,5 @@ export default function ProtectedRoute({ roles = [], children }) {
     return <Navigate to="/patients" replace />;
   }
 
-  // 3) Autorizado:
-  //    - si este componente envuelve rutas anidadas, usa <Outlet/>
-  //    - si se usa como wrapper con {children}, devuelve children
   return children ? children : <Outlet />;
 }
