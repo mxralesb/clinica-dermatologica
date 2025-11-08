@@ -144,9 +144,8 @@ export default function Patients() {
     <div class="muted">${created?.name ? created.name : 'Paciente'}</div>
     <div class="row">URL: <code>http://localhost:5173/login/patient</code></div>
     <div class="row">Usuario: <code>${email}</code></div>
-    <div class="row">Contraseña temporal: <code>${password}</code></div>
-    <p class="warn">Recomendación: cambiar la contraseña en el primer ingreso.</p>
-  </div>
+    <div class="row">Contraseña de ingreso: <code>${password}</code></div>
+     </div>
   <script>window.onload = () => setTimeout(()=>window.print(), 50)</script>
 </body></html>`;
     const blob = new Blob([html], { type:'text/html;charset=utf-8' });
